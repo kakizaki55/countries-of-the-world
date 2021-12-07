@@ -4,22 +4,37 @@ import { useState, useEffect } from 'react';
 import CountryCard from './components/Country/Country';
 
 function App() {
-  const [country, setCountry] = useState([]);
+  const [countries, setcountries] = useState([]);
+  const [quary, setQuary] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await getCountries();
-      // console.log(data);
-      setCountry(data);
+      setcountries(data);
     };
     fetchData();
   }, []);
+
+  const filteredCountries = () => {
+    return countries.filter((country) => {
+      return country.name.includes(quary);
+    });
+  };
+
   return (
-    <div className="App">
-      {country.map((place) => {
-        return <CountryCard key={place.id} {...place} />;
-      })}
-    </div>
+    <>
+      <input
+        value={quary}
+        onChange={(e) => {
+          setQuary(e.target.value);
+        }}
+      />
+      <div className="App">
+        {filteredCountries().map((place) => {
+          return <CountryCard key={place.id} {...place} />;
+        })}
+      </div>
+    </>
   );
 }
 
