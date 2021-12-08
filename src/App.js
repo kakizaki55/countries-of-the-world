@@ -8,11 +8,13 @@ function App() {
   const [quary, setQuary] = useState('');
   const [continent, setContinent] = useState('All');
   const [order, setOrder] = useState('default');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await getCountries();
       setcountries(data);
+      setLoading(false);
     };
     fetchData();
   }, []);
@@ -45,6 +47,8 @@ function App() {
         );
       });
   };
+
+  if (loading) return <h1>Loading...</h1>;
 
   return (
     <>
