@@ -6,7 +6,8 @@ import CountryCard from './components/Country/Country';
 function App() {
   const [countries, setcountries] = useState([]);
   const [quary, setQuary] = useState('');
-  const [continent, setContinent] = useState('ALL');
+  const [continent, setContinent] = useState('All');
+  const [order, setOrder] = useState('default');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,9 +18,32 @@ function App() {
   }, []);
 
   const filteredCountries = () => {
-    return countries.filter((country) => {
-      return country.name.includes(quary);
-    });
+    return countries
+      .sort((a, b) => {
+        if (order === 'asc') {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        } else if (order === 'dsc') {
+          if (a.name > b.name) {
+            return -1;
+          }
+          if (a.name < b.name) {
+            return 1;
+          }
+          return 0;
+        }
+      })
+      .filter((country) => {
+        return (
+          country.name.toLowerCase().includes(quary) &&
+          (country.continent === continent || continent === 'All')
+        );
+      });
   };
 
   return (
@@ -36,6 +60,7 @@ function App() {
           setContinent(c.target.value);
         }}
       >
+        <option value="All">All</option>
         <option value="Oceania">Oceania</option>
         <option value="Europe">Europe</option>
         <option value="Africa">Africa</option>
@@ -43,6 +68,16 @@ function App() {
         <option value="North America">North America</option>
         <option value="South America">South America</option>
         <option value="Asia">Asia</option>
+      </select>
+      <select
+        value={order}
+        onChange={(c) => {
+          setOrder(c.target.value);
+        }}
+      >
+        <option value="default">default</option>
+        <option value="asc">A-Z</option>
+        <option value="dsc">Z-A</option>
       </select>
 
       <div className="App">
